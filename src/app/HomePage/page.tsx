@@ -48,6 +48,7 @@ export default function Home() {
   const [showRules, setShowRules] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const containerRef = useRef(null);
   const controls = useAnimation();
   const { scrollYProgress } = useScroll({
@@ -55,6 +56,10 @@ export default function Home() {
     offset: ["start start", "end end"],
   });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Simulate loading progress with more realistic timing
   useEffect(() => {
@@ -73,6 +78,8 @@ export default function Home() {
 
   // Premium Snowfall Effect Component
   const SnowParticle = ({ style, hero = false }: any) => {
+    if (!isClient) return null;
+
     const particleTypes = [
       <FaSnowflake key="f1" />,
       <GiSnowflake1 key="f2" />,
@@ -83,16 +90,19 @@ export default function Home() {
       <IoMdSnow key="f7" />,
       <GiIceSpellCast key="f8" />,
     ];
-    
-    const randomType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
-    
+
+    const randomType =
+      particleTypes[Math.floor(Math.random() * particleTypes.length)];
+
     return (
       <motion.div
-        className={`absolute text-white pointer-events-none ${hero ? "z-20" : "z-0"}`}
+        className={`absolute text-white pointer-events-none ${
+          hero ? "z-20" : "z-0"
+        }`}
         style={style}
         initial={{ y: -10, opacity: 0 }}
         animate={{
-          y: window.innerHeight + 10,
+          y: isClient ? window.innerHeight + 10 : 0,
           opacity: [0, 1, 0],
           x: style.x + Math.sin(style.y * 0.01) * 50,
           rotate: Math.random() * 360,
@@ -125,7 +135,7 @@ export default function Home() {
     y: Math.random() * 100,
     size: 0.5 + Math.random() * 2.5,
     speed: 15 + Math.random() * 25,
-    hero: true
+    hero: true,
   }));
 
   // Auto-rotate features with smooth transitions
@@ -167,28 +177,32 @@ export default function Home() {
     {
       icon: <GiMineWagon className="text-6xl text-yellow-400" />,
       title: "Survival Economy",
-      description: "Engage in our player-driven economy with shops, auctions, and a dynamic market system that evolves with player activity",
+      description:
+        "Engage in our player-driven economy with shops, auctions, and a dynamic market system that evolves with player activity",
       color: "from-yellow-600/20 to-yellow-800/20",
       bgImage: "bg-[url('/banner3.jpg')]",
     },
     {
       icon: <GiSwordman className="text-6xl text-red-400" />,
       title: "PvP Arenas",
-      description: "Compete in our ranked PvP battle arenas with seasonal tournaments and exclusive rewards for top players",
+      description:
+        "Compete in our ranked PvP battle arenas with seasonal tournaments and exclusive rewards for top players",
       color: "from-red-600/20 to-red-800/20",
       bgImage: "bg-[url('/banner1.jpg')]",
     },
     {
       icon: <GiChest className="text-6xl text-green-400" />,
       title: "Daily Rewards",
-      description: "Login daily to claim increasingly valuable rewards, including exclusive cosmetics and rare items",
+      description:
+        "Login daily to claim increasingly valuable rewards, including exclusive cosmetics and rare items",
       color: "from-green-600/20 to-green-800/20",
       bgImage: "bg-[url('/banner2.jpg')]",
     },
     {
       icon: <GiLockedChest className="text-6xl text-purple-400" />,
       title: "Rare Loot",
-      description: "Discover hidden treasures containing legendary items, rare artifacts, and unique collectibles",
+      description:
+        "Discover hidden treasures containing legendary items, rare artifacts, and unique collectibles",
       color: "from-purple-600/20 to-purple-800/20",
       bgImage: "bg-[url('/banner4.jpg')]",
     },
@@ -224,14 +238,14 @@ export default function Home() {
 
   // Premium staff members data
   const staffMembers = [
-      {
-        name: "Owner • Ike",
-        role: "Owner",
-        online: true,
-        avatar: "/skinmc-avatar (5).png",
-        since: "2020",
-        specialty: "Server Management",
-      },
+    {
+      name: "Owner • Ike",
+      role: "Owner",
+      online: true,
+      avatar: "/skinmc-avatar (5).png",
+      since: "2020",
+      specialty: "Server Management",
+    },
     {
       name: "Owner • inputcost",
       role: "Owner",
@@ -308,50 +322,48 @@ export default function Home() {
 
   // Premium recent players data
   const recentPlayers = [
-    { 
-      name: "DiamondMiner", 
-      status: "Mining", 
+    {
+      name: "DiamondMiner",
+      status: "Mining",
       online: true,
       rank: "Elite",
-      playtime: "1,200h"
+      playtime: "1,200h",
     },
-    { 
-      name: "PvPKing", 
-      status: "In Arena", 
+    {
+      name: "PvPKing",
+      status: "In Arena",
       online: true,
       rank: "Champion",
-      playtime: "850h"
+      playtime: "850h",
     },
-    { 
-      name: "RedstonePro", 
-      status: "Building", 
+    {
+      name: "RedstonePro",
+      status: "Building",
       online: false,
       rank: "Architect",
-      playtime: "1,500h"
+      playtime: "1,500h",
     },
-    { 
-      name: "TraderJoe", 
-      status: "Shopping", 
+    {
+      name: "TraderJoe",
+      status: "Shopping",
       online: true,
       rank: "Tycoon",
-      playtime: "2,300h"
+      playtime: "2,300h",
     },
   ];
 
   // Premium Server IP Component
   const ServerIPSection = () => {
     const [copied, setCopied] = useState(false);
-    
+
     const copyToClipboard = () => {
       navigator.clipboard.writeText("play.seasonmc.com");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     };
-    
+
     return (
-      <motion.div 
-        className="relative mt-8 bg-black/40 rounded-xl p-4 border border-pink-700/50 max-w-md mx-auto"
-      >
+      <motion.div className="relative mt-8 bg-black/40 rounded-xl p-4 border border-pink-700/50 max-w-md mx-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <FaServer className="text-pink-400 mr-3 text-xl" />
@@ -371,7 +383,7 @@ export default function Home() {
             {copied ? "Copied!" : "Copy IP"}
           </motion.button>
         </div>
-        
+
         {/* Premium route visualization */}
         <div className="mt-4">
           <div className="relative w-full h-2 bg-pink-900/50 rounded-full overflow-hidden">
@@ -386,7 +398,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         <p className="text-center text-pink-300 text-xs mt-2">
           Connecting players worldwide...
         </p>
@@ -397,7 +409,7 @@ export default function Home() {
   // Premium decorative elements
   const FloatingDecorations = () => (
     <>
-      <motion.div 
+      <motion.div
         className="absolute bottom-10 left-1/4 text-4xl text-pink-400/20"
         animate={{
           y: [0, -20, 0],
@@ -407,13 +419,13 @@ export default function Home() {
           duration: 8,
           repeat: Infinity,
           repeatType: "reverse",
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       >
         <GiMinerals />
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         className="absolute top-1/3 right-20 text-5xl text-purple-400/20"
         animate={{
           y: [0, 15, 0],
@@ -424,13 +436,13 @@ export default function Home() {
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",
-          delay: 0.5
+          delay: 0.5,
         }}
       >
         <GiSwordman />
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         className="absolute top-1/4 left-20 text-4xl text-blue-400/20"
         animate={{
           y: [0, -15, 0],
@@ -441,7 +453,7 @@ export default function Home() {
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",
-          delay: 0.8
+          delay: 0.8,
         }}
       >
         <GiTreasureMap />
@@ -458,26 +470,28 @@ export default function Home() {
       className="fixed inset-0 bg-gradient-to-b from-pink-900 to-black z-50 flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Loading screen snow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {generalSnowParticles.slice(0, 10).map((flake) => (
-          <SnowParticle
-            key={`load-${flake.id}`}
-            style={{
-              left: `${flake.x}%`,
-              fontSize: `${flake.size * 0.2}rem`,
-              filter: `blur(${Math.random() * 2}px)`,
-            }}
-          />
-        ))}
-      </div>
-      
+      {isClient && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {generalSnowParticles.slice(0, 10).map((flake) => (
+            <SnowParticle
+              key={`load-${flake.id}`}
+              style={{
+                left: `${flake.x}%`,
+                fontSize: `${flake.size * 0.2}rem`,
+                filter: `blur(${Math.random() * 2}px)`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <motion.div
         initial={{ scale: 0.8, rotate: -5 }}
         animate={{
           scale: [0.8, 1.05, 1],
           rotate: [-5, 2, 0],
-          transition: { 
-            duration: 2, 
+          transition: {
+            duration: 2,
             ease: [0.16, 1, 0.3, 1],
           },
         }}
@@ -489,10 +503,10 @@ export default function Home() {
             scale: [1, 1.4, 1],
             opacity: [0.2, 0.6, 0.2],
             rotate: [0, 180, 360],
-            transition: { 
-              duration: 4, 
+            transition: {
+              duration: 4,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             },
           }}
         />
@@ -510,14 +524,14 @@ export default function Home() {
 
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: 1, 
-          y: 0, 
-          transition: { 
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: {
             delay: 0.8,
             type: "spring",
-            stiffness: 100
-          } 
+            stiffness: 100,
+          },
         }}
         className="text-3xl sm:text-4xl font-bold mt-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400"
       >
@@ -536,20 +550,20 @@ export default function Home() {
           animate={{ width: `${loadProgress}%` }}
           transition={{ duration: 0.3 }}
         >
-          <motion.div 
+          <motion.div
             className="absolute top-0 right-0 h-full w-1 bg-white opacity-70"
             animate={{
               opacity: [0, 1, 0],
               transition: {
                 duration: 1.5,
-                repeat: Infinity
-              }
+                repeat: Infinity,
+              },
             }}
           />
         </motion.div>
       </motion.div>
-      
-      <motion.p 
+
+      <motion.p
         className="text-pink-400 mt-4 text-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 1.2 } }}
@@ -572,9 +586,7 @@ export default function Home() {
       </Head>
 
       {/* Loading Animation */}
-      <AnimatePresence>
-        {loading && <LoadingScreen />}
-      </AnimatePresence>
+      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
 
       {/* Main Content */}
       {!loading && (
@@ -585,20 +597,41 @@ export default function Home() {
           animate={{ opacity: 1 }}
         >
           {/* General Snow Effect */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            {generalSnowParticles.map((flake) => (
-              <SnowParticle
-                key={flake.id}
-                style={{
-                  left: `${flake.x}%`,
-                  y: flake.y,
-                  fontSize: `${flake.size}rem`,
-                  filter: `blur(${Math.random() * 3}px)`,
-                  opacity: 0.7 + Math.random() * 0.3,
-                }}
-              />
-            ))}
-          </div>
+          {isClient && (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              {generalSnowParticles.map((flake) => (
+                <SnowParticle
+                  key={flake.id}
+                  style={{
+                    left: `${flake.x}%`,
+                    y: flake.y,
+                    fontSize: `${flake.size}rem`,
+                    filter: `blur(${Math.random() * 3}px)`,
+                    opacity: 0.7 + Math.random() * 0.3,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Hero-specific snow effect */}
+          {isClient && (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+              {heroSnowParticles.map((flake) => (
+                <SnowParticle
+                  key={flake.id}
+                  style={{
+                    left: `${flake.x}%`,
+                    y: flake.y,
+                    fontSize: `${flake.size}rem`,
+                    filter: `blur(${Math.random() * 1}px)`,
+                    opacity: 0.8,
+                  }}
+                  hero={true}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Parallax background with animated gradient */}
           <motion.div
@@ -606,20 +639,21 @@ export default function Home() {
             style={{ y: backgroundY }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-pink-900/90 via-purple-900/70 to-black" />
-            <motion.div 
+            <motion.div
               className="absolute inset-0 opacity-20"
               animate={{
-                backgroundPosition: ['0% 0%', '100% 100%'],
+                backgroundPosition: ["0% 0%", "100% 100%"],
                 transition: {
                   duration: 30,
                   repeat: Infinity,
                   repeatType: "reverse",
-                  ease: "linear"
-                }
+                  ease: "linear",
+                },
               }}
               style={{
-                backgroundImage: 'radial-gradient(circle at 50% 50%, #ff00aa, #00aaff)',
-                backgroundSize: '200% 200%'
+                backgroundImage:
+                  "radial-gradient(circle at 50% 50%, #ff00aa, #00aaff)",
+                backgroundSize: "200% 200%",
               }}
             />
           </motion.div>
@@ -649,7 +683,7 @@ export default function Home() {
                     SeasonMC
                   </span>
                 </motion.div>
-                
+
                 <div className="flex space-x-3">
                   <motion.button
                     whileHover={{ scale: 1.05, backgroundColor: "#db2777" }}
@@ -661,10 +695,10 @@ export default function Home() {
                     <FaUser className="inline mr-2" /> Login
                   </motion.button>
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.05, 
+                    whileHover={{
+                      scale: 1.05,
                       backgroundColor: "#7e22ce",
-                      boxShadow: "0 0 15px rgba(167, 139, 250, 0.5)"
+                      boxShadow: "0 0 15px rgba(167, 139, 250, 0.5)",
                     }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-purple-700 px-4 py-2 rounded-lg text-sm"
@@ -680,35 +714,37 @@ export default function Home() {
             {/* Premium Hero Section with Special Snow Effect */}
             <section className="relative min-h-screen flex items-center justify-center px-6 text-center pt-20 overflow-hidden">
               {/* Hero-specific snow effect */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
-                {heroSnowParticles.map((flake) => (
-                  <SnowParticle
-                    key={flake.id}
-                    style={{
-                      left: `${flake.x}%`,
-                      y: flake.y,
-                      fontSize: `${flake.size}rem`,
-                      filter: `blur(${Math.random() * 1}px)`,
-                      opacity: 0.8,
-                    }}
-                    hero={true}
-                  />
-                ))}
-              </div>
-              
+              {isClient && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+                  {heroSnowParticles.map((flake) => (
+                    <SnowParticle
+                      key={flake.id}
+                      style={{
+                        left: `${flake.x}%`,
+                        y: flake.y,
+                        fontSize: `${flake.size}rem`,
+                        filter: `blur(${Math.random() * 1}px)`,
+                        opacity: 0.8,
+                      }}
+                      hero={true}
+                    />
+                  ))}
+                </div>
+              )}
+
               <div className="relative z-30 max-w-6xl mx-auto">
                 {/* Floating particles */}
                 <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-pink-600/20 blur-3xl"></div>
                 <div className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full bg-purple-600/20 blur-3xl"></div>
-                
+
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.8, 
+                  transition={{
+                    duration: 0.8,
                     delay: 0.7,
                     type: "spring",
-                    damping: 10
+                    damping: 10,
                   }}
                   className="mb-8 relative"
                   onHoverStart={() => setIsHovering(true)}
@@ -735,15 +771,19 @@ export default function Home() {
                 <motion.p
                   className="text-xl sm:text-2xl text-pink-200 mb-12 max-w-3xl mx-auto leading-relaxed"
                   initial={{ opacity: 0 }}
-                  animate={{ 
-                    opacity: 1, 
-                    transition: { 
+                  animate={{
+                    opacity: 1,
+                    transition: {
                       delay: 0.9,
-                      duration: 1 
-                    } 
+                      duration: 1,
+                    },
                   }}
                 >
-                  The ultimate <span className="text-pink-400 font-semibold">Minecraft survival experience</span> with economy, PvP, and an amazing community!
+                  The ultimate{" "}
+                  <span className="text-pink-400 font-semibold">
+                    Minecraft survival experience
+                  </span>{" "}
+                  with economy, PvP, and an amazing community!
                 </motion.p>
 
                 <motion.div
@@ -752,15 +792,16 @@ export default function Home() {
                   animate={{ opacity: 1, transition: { delay: 1.1 } }}
                 >
                   <motion.button
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 0 20px rgba(236, 72, 153, 0.7)"
+                      boxShadow: "0 0 20px rgba(236, 72, 153, 0.7)",
                     }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 px-8 py-4 rounded-xl text-lg font-semibold relative overflow-hidden"
                   >
                     <span className="relative z-10 flex items-center justify-center">
-                      <FaServer className="inline mr-3 text-xl" /> Join Server Now
+                      <FaServer className="inline mr-3 text-xl" /> Join Server
+                      Now
                     </span>
                     <motion.span
                       className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 opacity-0"
@@ -771,15 +812,15 @@ export default function Home() {
                       transition={{
                         duration: 2,
                         repeat: Infinity,
-                        repeatDelay: 1
+                        repeatDelay: 1,
                       }}
                     />
                   </motion.button>
-                  
+
                   <motion.button
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)"
+                      boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)",
                     }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-8 py-4 rounded-xl text-lg font-semibold"
@@ -787,11 +828,11 @@ export default function Home() {
                     <FaDiscord className="inline mr-3 text-xl" /> Discord
                   </motion.button>
                 </motion.div>
-                
+
                 {/* Premium Server IP Section */}
                 <ServerIPSection />
               </div>
-              
+
               {/* Floating decorative elements */}
               <FloatingDecorations />
             </section>
@@ -807,7 +848,7 @@ export default function Home() {
               {/* Decorative elements */}
               <div className="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-pink-600/10 blur-3xl"></div>
               <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-purple-600/10 blur-3xl"></div>
-              
+
               <div className="container mx-auto px-6 relative">
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold text-center mb-12 text-pink-100"
@@ -816,9 +857,10 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
                 >
-                  Why Players <span className="text-pink-400">Love</span> Our Server
+                  Why Players <span className="text-pink-400">Love</span> Our
+                  Server
                 </motion.h2>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {serverStats.map((stat, index) => (
                     <motion.div
@@ -852,7 +894,7 @@ export default function Home() {
             {/* Premium Features Section */}
             <section className="py-20 px-6 bg-gradient-to-b from-pink-900/20 to-black/50 relative overflow-hidden">
               {/* Decorative floating elements */}
-              <motion.div 
+              <motion.div
                 className="absolute top-20 left-10 text-6xl text-pink-400/10"
                 animate={{
                   y: [0, 30, 0],
@@ -861,13 +903,13 @@ export default function Home() {
                 transition={{
                   duration: 20,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
               >
                 <GiChest />
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="absolute bottom-20 right-10 text-7xl text-purple-400/10"
                 animate={{
                   y: [0, -30, 0],
@@ -877,12 +919,12 @@ export default function Home() {
                   duration: 25,
                   repeat: Infinity,
                   ease: "linear",
-                  delay: 2
+                  delay: 2,
                 }}
               >
                 <GiSwordman />
               </motion.div>
-              
+
               <div className="container mx-auto relative">
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold text-center mb-16 text-pink-100"
@@ -894,18 +936,22 @@ export default function Home() {
                 </motion.h2>
 
                 <div className="relative h-[500px] rounded-2xl overflow-hidden">
-                  {features.map((feature, index) => 
+                  {features.map((feature, index) => (
                     <motion.div
                       key={index}
-                      className={`absolute inset-0 ${feature.bgImage} bg-cover bg-center rounded-2xl overflow-hidden flex flex-col items-center justify-center text-center ${
+                      className={`absolute inset-0 ${
+                        feature.bgImage
+                      } bg-cover bg-center rounded-2xl overflow-hidden flex flex-col items-center justify-center text-center ${
                         activeFeature === index ? "opacity-100" : "opacity-0"
                       }`}
                       animate={{ opacity: activeFeature === index ? 1 : 0 }}
                       transition={{ duration: 0.8 }}
                     >
                       <div className="absolute inset-0 bg-black/50"></div>
-                      <div className={`absolute inset-0 bg-gradient-to-b ${feature.color}`}></div>
-                      
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-b ${feature.color}`}
+                      ></div>
+
                       <div className="relative z-10 p-8 max-w-2xl">
                         <motion.div
                           className="mb-6 inline-block"
@@ -951,13 +997,17 @@ export default function Home() {
                         </motion.button>
                       </div>
                     </motion.div>
-                  )}
+                  ))}
                   <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-10">
                     {features.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setActiveFeature(index)}
-                        className={`w-3 h-3 rounded-full transition-all ${activeFeature === index ? 'bg-pink-400 w-6' : 'bg-white/30'}`}
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          activeFeature === index
+                            ? "bg-pink-400 w-6"
+                            : "bg-white/30"
+                        }`}
                       />
                     ))}
                   </div>
@@ -970,7 +1020,7 @@ export default function Home() {
               {/* Floating decorative elements */}
               <div className="absolute -left-20 top-1/4 w-40 h-40 rounded-full bg-pink-600/10 blur-3xl"></div>
               <div className="absolute -right-20 bottom-1/4 w-60 h-60 rounded-full bg-purple-600/10 blur-3xl"></div>
-              
+
               {/* Left Column - Online Staff */}
               <motion.section
                 className="bg-pink-900/40 rounded-2xl p-6 border border-pink-800/50 backdrop-blur-sm"
@@ -996,24 +1046,28 @@ export default function Home() {
                     >
                       <div className="relative w-12 h-12 bg-pink-900/50 rounded-full mr-4 flex-shrink-0 overflow-hidden border border-pink-700/30">
                         {staff.avatar ? (
-                          <Image 
-                            src={staff.avatar} 
+                          <Image
+                            src={staff.avatar}
                             alt={staff.name}
                             width={48}
                             height={48}
                             className="object-cover"
                           />
                         ) : (
-                          <FaUser className={
-                            `w-full h-full p-3 ${staff.online ? "text-pink-300" : "text-gray-400"}`
-                          } />
+                          <FaUser
+                            className={`w-full h-full p-3 ${
+                              staff.online ? "text-pink-300" : "text-gray-400"
+                            }`}
+                          />
                         )}
                         {staff.online && (
                           <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border border-pink-900"></div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-lg truncate">{staff.name}</h3>
+                        <h3 className="font-bold text-lg truncate">
+                          {staff.name}
+                        </h3>
                         <p className="text-pink-300 text-sm">{staff.role}</p>
                         <div className="flex mt-1 text-xs text-pink-400/80 gap-2">
                           <span>Since {staff.since}</span>
@@ -1036,17 +1090,19 @@ export default function Home() {
                   transition={{ duration: 0.5 }}
                 >
                   <h2 className="text-2xl font-bold mb-6 text-pink-100 flex items-center">
-                    <FaShoppingCart className="inline mr-3 text-yellow-400" /> Server Store
+                    <FaShoppingCart className="inline mr-3 text-yellow-400" />{" "}
+                    Server Store
                   </h2>
-                  <motion.button 
-                    whileHover={{ 
+                  <motion.button
+                    whileHover={{
                       scale: 1.02,
-                      boxShadow: "0 0 15px rgba(234, 179, 8, 0.5)"
+                      boxShadow: "0 0 15px rgba(234, 179, 8, 0.5)",
                     }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 px-5 py-4 rounded-xl font-medium mb-6 flex items-center justify-center"
                   >
-                    <FaGift className="inline mr-3 text-xl" /> Shop Now & Get Rewards!
+                    <FaGift className="inline mr-3 text-xl" /> Shop Now & Get
+                    Rewards!
                   </motion.button>
                   <div className="bg-pink-800/30 rounded-xl p-5 border border-pink-700/30">
                     <div className="flex justify-between items-center mb-4">
@@ -1058,9 +1114,12 @@ export default function Home() {
                       </span>
                     </div>
                     <div className="bg-pink-900/20 rounded-lg p-4 mb-4 border border-pink-800/50">
-                      <h4 className="font-bold text-pink-100 mb-1">Winter Event 2023</h4>
+                      <h4 className="font-bold text-pink-100 mb-1">
+                        Winter Event 2023
+                      </h4>
                       <p className="text-pink-300 text-sm mb-2">
-                        Join our special winter event with exclusive rewards and snow-themed minigames!
+                        Join our special winter event with exclusive rewards and
+                        snow-themed minigames!
                       </p>
                       <span className="text-xs text-pink-400">2 hours ago</span>
                     </div>
@@ -1078,7 +1137,8 @@ export default function Home() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                 >
                   <h2 className="text-2xl font-bold mb-6 text-pink-100 flex items-center">
-                    <FaTrophy className="inline mr-3 text-purple-400" /> Current Events
+                    <FaTrophy className="inline mr-3 text-purple-400" /> Current
+                    Events
                   </h2>
                   <div className="bg-pink-800/30 rounded-xl p-5 border border-pink-700/30">
                     <div className="flex items-start mb-4">
@@ -1090,10 +1150,13 @@ export default function Home() {
                           PvP Tournament
                         </h3>
                         <p className="text-pink-300 text-sm mb-3">
-                          Weekly championship with amazing prizes! Top 3 players get special ranks.
+                          Weekly championship with amazing prizes! Top 3 players
+                          get special ranks.
                         </p>
                         <div className="flex items-center text-xs text-pink-400 mb-3">
-                          <span className="bg-pink-900/50 px-2 py-1 rounded mr-2">Ongoing</span>
+                          <span className="bg-pink-900/50 px-2 py-1 rounded mr-2">
+                            Ongoing
+                          </span>
                           <span>Ends in 2 days</span>
                         </div>
                       </div>
@@ -1144,7 +1207,9 @@ export default function Home() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-baseline">
-                            <h3 className="font-bold truncate">{player.name}</h3>
+                            <h3 className="font-bold truncate">
+                              {player.name}
+                            </h3>
                             <span className="text-xs text-pink-400/80 ml-2">
                               {player.playtime}
                             </span>
@@ -1171,10 +1236,12 @@ export default function Home() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                 >
                   <h2 className="text-2xl font-bold mb-6 text-blue-100 flex items-center">
-                    <FaDiscord className="inline mr-3 text-indigo-400" /> Join Our Discord
+                    <FaDiscord className="inline mr-3 text-indigo-400" /> Join
+                    Our Discord
                   </h2>
                   <p className="text-blue-200 mb-6">
-                    Connect with our community for updates, events, support, and exclusive giveaways!
+                    Connect with our community for updates, events, support, and
+                    exclusive giveaways!
                   </p>
                   <div className="bg-blue-800/30 rounded-xl p-4 mb-6 border border-blue-700/30">
                     <div className="flex items-center mb-2">
@@ -1182,8 +1249,12 @@ export default function Home() {
                         <FaUser className="text-blue-300" />
                       </div>
                       <div>
-                        <h3 className="text-blue-100 font-medium">200+ Members</h3>
-                        <p className="text-blue-300 text-xs">Active community</p>
+                        <h3 className="text-blue-100 font-medium">
+                          200+ Members
+                        </h3>
+                        <p className="text-blue-300 text-xs">
+                          Active community
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -1191,15 +1262,17 @@ export default function Home() {
                         <FaTrophy className="text-yellow-400" />
                       </div>
                       <div>
-                        <h3 className="text-blue-100 font-medium">Exclusive Roles</h3>
+                        <h3 className="text-blue-100 font-medium">
+                          Exclusive Roles
+                        </h3>
                         <p className="text-blue-300 text-xs">Special perks</p>
                       </div>
                     </div>
                   </div>
                   <motion.button
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.02,
-                      boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)"
+                      boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)",
                     }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-5 py-4 rounded-xl font-semibold flex items-center justify-center"
@@ -1219,13 +1292,14 @@ export default function Home() {
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                   <h2 className="text-2xl font-bold text-pink-100 flex items-center mb-4 sm:mb-0">
-                    <FaBook className="inline mr-3 text-purple-400" /> Server Rules
+                    <FaBook className="inline mr-3 text-purple-400" /> Server
+                    Rules
                   </h2>
                   <button
                     onClick={() => setShowRules(!showRules)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      showRules 
-                        ? "bg-pink-700 text-white" 
+                      showRules
+                        ? "bg-pink-700 text-white"
                         : "bg-pink-900/50 text-pink-300 hover:bg-pink-800/50"
                     }`}
                   >
@@ -1245,21 +1319,24 @@ export default function Home() {
                       <div className="p-6">
                         <div className="mb-6">
                           <p className="text-pink-300 mb-4">
-                            By joining our server, you agree to follow these rules. Violations may result in warnings, temporary bans, or permanent bans depending on severity.
+                            By joining our server, you agree to follow these
+                            rules. Violations may result in warnings, temporary
+                            bans, or permanent bans depending on severity.
                           </p>
                           <div className="bg-pink-900/50 text-pink-200 p-4 rounded-lg border border-pink-800/50">
                             <p className="font-medium mb-2">⚠️ Important:</p>
                             <p className="text-sm">
-                              Ignorance of the rules is not an excuse. Staff decisions are final in rule interpretations.
+                              Ignorance of the rules is not an excuse. Staff
+                              decisions are final in rule interpretations.
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                           {Object.entries(rulesCategories).map(
                             ([category, rules]) => (
-                              <motion.div 
-                                key={category} 
+                              <motion.div
+                                key={category}
                                 className="bg-pink-900/20 rounded-lg p-5 border border-pink-800/50"
                                 initial={{ opacity: 0, y: 10 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -1274,8 +1351,8 @@ export default function Home() {
                                 </h3>
                                 <ul className="space-y-3">
                                   {rules.map((rule, index) => (
-                                    <motion.li 
-                                      key={index} 
+                                    <motion.li
+                                      key={index}
                                       className="text-pink-200 text-sm flex items-start"
                                       initial={{ opacity: 0, x: -5 }}
                                       whileInView={{ opacity: 1, x: 0 }}
@@ -1305,69 +1382,177 @@ export default function Home() {
               {/* Decorative elements */}
               <div className="absolute inset-0 bg-[url('/footer-pattern.png')] opacity-5"></div>
               <div className="absolute -top-20 left-1/2 w-60 h-60 rounded-full bg-pink-600/10 blur-3xl"></div>
-              
+
               <div className="container mx-auto relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                   <div>
-                    <h3 className="text-xl font-bold text-pink-100 mb-4">SeasonMC</h3>
+                    <h3 className="text-xl font-bold text-pink-100 mb-4">
+                      SeasonMC
+                    </h3>
                     <p className="text-pink-300 text-sm mb-4">
                       The ultimate Minecraft survival experience since 2020.
                     </p>
                     <div className="flex space-x-4">
-                      <a href="#" className="text-pink-400 hover:text-white text-xl">
+                      <a
+                        href="#"
+                        className="text-pink-400 hover:text-white text-xl"
+                      >
                         <FaDiscord />
                       </a>
-                      <a href="#" className="text-pink-400 hover:text-white text-xl">
+                      <a
+                        href="#"
+                        className="text-pink-400 hover:text-white text-xl"
+                      >
                         <FaGlobe />
                       </a>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-xl font-bold text-pink-100 mb-4">Quick Links</h3>
+                    <h3 className="text-xl font-bold text-pink-100 mb-4">
+                      Quick Links
+                    </h3>
                     <ul className="space-y-2">
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Home</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Vote</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Store</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Leaderboards</a></li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Home
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Vote
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Store
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Leaderboards
+                        </a>
+                      </li>
                     </ul>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-xl font-bold text-pink-100 mb-4">Information</h3>
+                    <h3 className="text-xl font-bold text-pink-100 mb-4">
+                      Information
+                    </h3>
                     <ul className="space-y-2">
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Rules</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Staff</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">FAQ</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Support</a></li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Rules
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Staff
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          FAQ
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Support
+                        </a>
+                      </li>
                     </ul>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-xl font-bold text-pink-100 mb-4">Legal</h3>
+                    <h3 className="text-xl font-bold text-pink-100 mb-4">
+                      Legal
+                    </h3>
                     <ul className="space-y-2">
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Terms</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Privacy</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Refunds</a></li>
-                      <li><a href="#" className="text-pink-300 hover:text-white text-sm">Contact</a></li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Terms
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Privacy
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Refunds
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="text-pink-300 hover:text-white text-sm"
+                        >
+                          Contact
+                        </a>
+                      </li>
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="pt-8 border-t border-pink-800/50 text-center">
                   <div className="flex justify-center gap-6 mb-4">
-                    <a href="#" className="text-pink-400 hover:text-white text-sm font-medium">
+                    <a
+                      href="#"
+                      className="text-pink-400 hover:text-white text-sm font-medium"
+                    >
                       Terms
                     </a>
-                    <a href="#" className="text-pink-400 hover:text-white text-sm font-medium">
+                    <a
+                      href="#"
+                      className="text-pink-400 hover:text-white text-sm font-medium"
+                    >
                       Privacy
                     </a>
-                    <a href="#" className="text-pink-400 hover:text-white text-sm font-medium">
+                    <a
+                      href="#"
+                      className="text-pink-400 hover:text-white text-sm font-medium"
+                    >
                       Support
                     </a>
                   </div>
                   <p className="text-pink-500 text-xs">
-                    &copy; {new Date().getFullYear()} SeasonMC. Not affiliated with Mojang or Microsoft.
+                    &copy; {new Date().getFullYear()} SeasonMC. Not affiliated
+                    with Mojang or Microsoft.
                   </p>
                 </div>
               </div>
